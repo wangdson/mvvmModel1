@@ -5,13 +5,14 @@ const OP = Object.prototype;
  */
 const OAM = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
 
-class Jsonob{
+class ObjModelMode{
     constructor(obj, callback){
         if(OP.toString.call(obj) !== '[object Object]'){
             console.error('This parameter must be an object：' + obj);
         }
         this.$callback = callback;
-        this.observe(obj);
+        let path = ["data"];
+        this.observe(obj,path);
     }
 
     observe(obj,path){
@@ -33,7 +34,7 @@ class Jsonob{
                 },
                 set: (function(newVal){
                     if(oldVal != newVal){
-                        this.$callback(newVal,oldVal,pathArray);
+                        this.$callback(newVal,oldVal,`${path}-${key}`);
                         oldVal = newVal;
                     }
                 }).bind(this)
@@ -64,12 +65,26 @@ class Jsonob{
                  value:function(){
                      oldArray = this.slice(0);
                      console.log(`oldArray:${JSON.stringify(oldArray)}`);
-                     var arg = [].slice.apply(arguments);
+                     var args = [].slice.apply(arguments);
                      // 调用原始 原型 的数组方法
-                     result = originalProto[method].apply(this,arg);
+                     result = originalProto[method].apply(this,args);
                      //对新的数组进行监测
-                     self.observe(this,path);
-                     //执行回调
+                    //  self.observe(this);
+                    
+                    // 下面是vue源码部分处理
+                    let inserted
+                    switch (method) {
+                        case 'push':
+                        case 'unshift':
+                          inserted = args
+                          break
+                        case 'splice':
+                          inserted = args.slice(2)
+                          break
+                      }
+                     if (inserted) self.observe(inserted,path)
+
+                     //执行回调 notify模块操作
                      self.$callback(this,oldArray,path);
 
                      return result;

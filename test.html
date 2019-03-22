@@ -4,10 +4,14 @@
     </head>
     <body>
 
-        <script src="Jsonob.js"></script>
+        <script src="objmvvm.js"></script>
         <script>    
-            var callback = function(newVal,oldVal,path){
+            var arrCallback = function(newVal,oldVal,path){
                 console.log(`newVal:${newVal},oldVal:${oldVal},修改路径：${path}`);
+            };
+
+            var objCallback = function(newVal,oldVal){
+                console.log(`newVal:${newVal},oldVal:${oldVal}`);
             };
 
             var data = {
@@ -21,7 +25,8 @@
                 }
             }
 
-            var j = new Jsonob(data, callback);
+            var obj = new ObjModelMode(data, arrCallback);
+            // var obj = new ArrMVVMMode(data, arrCallback);
 
             data.a = 250;
             data.level1.b = 'sss';
@@ -29,5 +34,6 @@
             data.level1.c.push(4);
             data.level1.c[0] = 100;
         </script>
+        <h1> MVVM模型测试页面 </h1>
     </body>
 </html>

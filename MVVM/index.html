@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--不兼容低版本  Object.defineProperty-->
+
+<script>
+  let obj = {};
+  Object.defineProperty(obj, 'school', {
+    configurable: true,   //可以配置  默认不可以删除
+//    writable: true,        //可写    默认不可以修改
+    enumerable: true,      //可枚举的  默认不可以枚举
+//    value: 'zfpx',
+    get(){
+        return 'zfpx'    //获取obj.school 值时，会调用get
+    },
+    set(v){  //obj.school = 'zfpx2'
+        console.log(v);
+    }
+  });
+  //  delete obj.school;
+//  obj.school = 'zfpx2';
+//  console.log(obj);
+
+    for(let key in obj){
+        console.log(key);
+    }
+</script>
+</body>
+</html>
